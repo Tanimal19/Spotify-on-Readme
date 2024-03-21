@@ -35,7 +35,7 @@ app.use(express.static(__dirname + '/public'))
   .use(cors())
   .use(cookieParser());
 
-app.get('/login', function(req, res) {
+app.get('/login', function (req, res) {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
@@ -51,7 +51,7 @@ app.get('/login', function(req, res) {
 });
 
 
-app.get('/callback', function(req, res) {
+app.get('/callback', function (req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
   var code = req.query.code || null;
@@ -67,24 +67,24 @@ app.get('/callback', function(req, res) {
     res.clearCookie(stateKey);
 
     axios.post('https://accounts.spotify.com/api/token', querystring.stringify({
-        code: code,
-        redirect_uri: redirect_uri,
-        grant_type: 'authorization_code'
-      }), {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64')
-        }
-      })
+      code: code,
+      redirect_uri: redirect_uri,
+      grant_type: 'authorization_code'
+    }), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64')
+      }
+    })
       .then(response => {
         var access_token = response.data.access_token;
         var refresh_token = response.data.refresh_token;
 
         axios.get('https://api.spotify.com/v1/me', {
-            headers: {
-              'Authorization': 'Bearer ' + access_token
-            }
-          })
+          headers: {
+            'Authorization': 'Bearer ' + access_token
+          }
+        })
           .then(response => {
             console.log(response.data);
           })
