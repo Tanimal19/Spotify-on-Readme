@@ -85,6 +85,8 @@ add below snippet into your `README.md`
 `get_spotify.js` will replace the content of `<td align="center" id="top-artist"></td>` with an unordered list of **top 5 artists**,  
 and replace the content of `<td id="top-track"></td>` with a list of ordered list of **top 10 tracks**.  
 
+you could manually run github action to check if it works correctly.
+
 > [!TIP]
 > You can check out and modify `get_spotify.js` to change the format
 
