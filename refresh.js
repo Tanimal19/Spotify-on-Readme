@@ -1,4 +1,5 @@
 var axios = require('axios');
+var fs = require('fs');
 var querystring = require('node:querystring');
 
 var client_id = 'bd16f32b8a5b4b5cbbfe82414ec2cf8c'; // your clientId
@@ -6,47 +7,95 @@ var client_secret = 'dadbdbf6451445d8a04497182501a203'; // Your secret
 
 var refresh_token = 'AQAhr3J9Z7c4wdKMuwxVQhNXjIVIWfgGuZuIiGTjm6RoqocPbsVcGQxa-7NfOC8t9-FIsMEg6N7Eky5H8V8wWSnonTL0Ewedn4DrGF7iXqVk89A4k6YWmLxi2Rm-9PqYlhg';
 
-axios.post('https://accounts.spotify.com/api/token', querystring.stringify({
-  grant_type: 'refresh_token',
-  refresh_token: refresh_token
-}), {
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'Authorization': 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64')
-  }
-})
-  .then(response => {
-    const access_token = response.data.access_token;
+async function fetchSpotifyStats(endpoint) {
+  try {
+    const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', querystring.stringify({
+      grant_type: 'refresh_token',
+      refresh_token: refresh_token
+    }), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64')
+      }
+    });
 
-    const endpoint = 'https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=5&offset=0';
+    const access_token = tokenResponse.data.access_token;
 
-    axios.get(endpoint, {
+    const response = await axios.get(endpoint, {
       headers: {
         'Authorization': 'Bearer ' + access_token
       },
-    })
-      .then(response => {
-        // Handle successful response
-        var html = "<ul>\n";
+    });
 
-        const itemList = response.data.items;
-        itemList.forEach(function (i) {
-          // 將每個項目的名稱和圖片 URL 加入到 HTML 字串中
-          html += "<li><img src='" + i.images[0].url + "' width='100px'><div>" + i.name + "</div></li>\n";
-        });
+    return response.data.items;
+  } catch (error) {
+    console.error('Error fetching Spotify stats:', error);
+    return [];
+  }
+}
 
-        // 完成列表 HTML 字串
-        html += "</ul>";
 
-        console.log(html);
-      })
-      .catch(error => {
-        // Handle error
-        console.error('Error fetching playlist items:', error);
+// Modify Readme Content
+/*
+var newData;
+const data = fs.readFileSync('README.md', 'utf8');
+const regex = /<div id="spotify">([\s\S]*?)<\/div>/;
+const match = data.match(regex);
+
+if (match) {
+  newData = data.replace(match[0], `<div id="spotify">${html}</div>`);
+}
+
+fs.writeFile('TEST.md', (newData ? newData : data), (err) => {
+  if (err) {
+    console.error('Failed to write Markdown file:', err);
+  } else {
+    console.log('Markdown file has been written successfully!');
+  }
+});
+*/
+
+
+async function main() {
+  // Fetch Spotify Data
+  const url_art = 'https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=5&offset=0';
+  const topArtistList = await fetchSpotifyStats(url_art);
+  var topArtistHtml;
+
+  if (topArtistList.length > 0) {
+    topArtistHtml = "<div>Top Artists</div><ol>\n";
+
+    topArtistList.forEach(function (i) {
+      topArtistHtml += "<li>" + i.name + "</li>\n";
+    });
+
+    topArtistHtml += "</ol>";
+  }
+
+  const url_track = 'https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=10&offset=0';
+  const topTrackList = await fetchSpotifyStats(url_track);
+  var topTrackHtml;
+
+  if (topTrackList.length > 0) {
+    topTrackHtml = "<div>Top Tracks</div><ol>\n";
+
+    topTrackList.forEach(function (i) {
+      topTrackHtml += "<li><div><strong>" + i.name + "</strong></div><br><div>";
+
+      const artists = i.artists;
+      artists.forEach(function (a) {
+        topTrackHtml += a.name;
       });
-  })
-  .catch(error => {
-    console.error('Error refreshing token:', error);
-  });
 
+      topTrackHtml += "</div>\n";
 
+    });
+
+    topTrackHtml += "</ol>";
+  }
+
+  console.log(topArtistHtml);
+  console.log(topTrackHtml);
+}
+
+main();

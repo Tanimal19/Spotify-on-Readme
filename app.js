@@ -15,10 +15,10 @@ var cookieParser = require('cookie-parser');
 var crypto = require('node:crypto');
 var querystring = require('node:querystring');
 
-var client_id = 'bd16f32b8a5b4b5cbbfe82414ec2cf8c'; // your clientId
-var client_secret = 'dadbdbf6451445d8a04497182501a203'; // Your secret
+var client_id = 'bd16f32b8a5b4b5cbbfe82414ec2cf8c'; // Your clientId
+var client_secret = 'dadbdbf6451445d8a04497182501a203'; // Your client secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
-var scope = 'user-top-read playlist-read-private';
+var scope = 'user-top-read playlist-read-private'; // Your scope
 
 const generateRandomString = (length) => {
   return crypto
