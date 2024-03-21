@@ -1,6 +1,6 @@
 # Spotify-on-Readme
 
-This is a simple tutorial of how to use **Github Action** and **Spotify Web API** to display & update spotify stats on your github readme.
+This is a simple tutorial of how to use **Github Action** and **Spotify Web API** to display & update spotify stats on your github readme.  
 You could check out my [github profile](https://github.com/Tanimal19) to see what it looks like.
 
 <br>
