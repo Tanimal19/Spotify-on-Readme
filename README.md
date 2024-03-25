@@ -31,11 +31,6 @@ var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 var scope = 'user-top-read playlist-read-private'; // Your scope
 ```
 
-> [!WARNING]
-> Using this method, your spotify api keys will be place in `get_spotify.js`,  
-> and unfortunately, this file can be access by others (I haven't come up with a better way to hide the keys).  
-> Thus it's better to only use **read-only scopes**, to prevent others modify your spotify contents.
-
 4. run
 ```
 node app.js
@@ -55,6 +50,11 @@ var client_id = ''; // your client_id
 var client_secret = ''; // your client secret
 var refresh_token = ''; // your refresh token
 ```
+
+> [!WARNING]
+> Using this method, your spotify api keys will be place in `get_spotify.js`,  
+> and unfortunately, this file can be access by others (I haven't come up with a better way to hide the keys).  
+> Thus it's better to only use **read-only scopes**, to prevent others modify your spotify contents.
 
 > [!IMPORTANT]
 > This config will get your  
