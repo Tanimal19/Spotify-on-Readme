@@ -7,18 +7,18 @@ Check out my [github profile](https://github.com/Tanimal19) to see what it looks
 
 ## Prerequisite
 
-1. having Spotify account
+1. having a Spotify account
 2. go to <https://developer.spotify.com/documentation/web-api> and create an app
-   - `website`: your github, namely `https://github.com/<user_name>`
-   - `redirect_uri`: `http://localhost:8888/callback`
+   - `website`: `https://github.com/<user_name>`
+   - `redirect_uri`: `http://127.0.0.1:8888/callback`
    - `APIs uesd`: select `Web API`
-3. install **node.js** on your computer
+3. nodejs
 
 <br>
 
 ## 1. Set up and Get token
 
-1. download `app.js` and `public/index.html` to your working folder
+1. clone this repo
 2. run
 ```
 npm install express axios cors cookie-parser
@@ -27,7 +27,7 @@ npm install express axios cors cookie-parser
 ```js
 var client_id = ''; // Your clientId
 var client_secret = ''; // Your client secret
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+var redirect_uri = 'http://127.0.0.1:8888/callback'; // Your redirect uri
 var scope = 'user-top-read playlist-read-private'; // Your scope
 ```
 
@@ -35,7 +35,7 @@ var scope = 'user-top-read playlist-read-private'; // Your scope
 ```
 node app.js
 ```
-5. go to <http://localhost:8888> and simply follow the instruct,  
+5. go to <http://127.0.0.1:8888> and simply follow the instruct,  
    then copy&save your `refresh_token` 
 
 <br>
@@ -43,18 +43,11 @@ node app.js
 ## 2. Configure github action
 
 1. Set up a new github action
-2. copy `workflows/main.yml` and `workflows/get_spotify.js` to your github action's folder (`.github/workflows/`)
-3. replace these variable in `get_spotify.js`
-```js
-var client_id = ''; // your client_id
-var client_secret = ''; // your client secret
-var refresh_token = ''; // your refresh token
-```
-
-> [!WARNING]
-> Using this method, your spotify api keys will be place in `get_spotify.js`,  
-> and unfortunately, this file can be access by others (I haven't come up with a better way to hide the keys).  
-> Thus it's better to only use **read-only scopes**, to prevent others modify your spotify contents.
+2. Copy `workflows/*` to your github action's folder (`.github/workflows/`)
+3. Add github secrets (Settings -> Secrets and variables -> Actions -> New repository secret)  
+   - `SPOTIFY_CLIENT_ID`: your clientId
+   - `SPOTIFY_CLIENT_SECRET`: your client secret
+   - `SPOTIFY_REFRESH_TOKEN`: your refresh_token
 
 > [!IMPORTANT]
 > This config will get your  
@@ -83,10 +76,10 @@ add below snippet into your `README.md`
   </tr>
 </table>
 ```
-`get_spotify.js` will replace the content of `<td align="center" id="top-artist"></td>` with an unordered list of **top 5 artists**, and replace the content of `<td id="top-track"></td>` with an ordered list of **top 10 tracks**.  
+`get_spotify_data.js` will replace the content of `<td align="center" id="top-artist"></td>` with an unordered list of **top 5 artists**, and replace the content of `<td id="top-track"></td>` with an ordered list of **top 10 tracks**.  
 
 > [!TIP]
-> You can check out and modify `get_spotify.js` to change the format
+> You can check out and modify `get_spotify_data.js` to change the format
 
 > [!WARNING]
 > According to [Spotify Design Guidelines](https://developer.spotify.com/documentation/design), you should put Spotify's logo when utilize it's content.
